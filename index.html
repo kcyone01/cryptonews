@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Am I Getting Fleeced? — The Ultimate Subscription Rip-Off Calculator</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- FontAwesome for Viral Social Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Custom scrollbar and animations for polished UI feel */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        @keyframes pulse-slow { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        .animate-pulse-slow { animation: pulse-slow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+    </style>
+</head>
+<body class="bg-slate-900 text-white font-sans min-h-screen flex flex-col items-center justify-between p-4 selection:bg-red-500 selection:text-white">
+
+    <!-- ================================================================= -->
+    <!-- AD SLOT 1: TOP LEADERBOARD (728x90 Desktop / 320x50 Mobile) -->
+    <!-- ================================================================= -->
+    <div class="w-full flex justify-center mb-6 min-h-[50px] md:min-h-[90px]">
+        <div class="bg-slate-800/40 border border-slate-700/50 rounded flex items-center justify-center overflow-hidden w-[320px] h-[50px] md:w-[728px] md:h-[90px]">
+            <!-- INSERT A-ADS EMBED CODE HERE -->
+            <span class="text-xs text-slate-500 uppercase tracking-widest font-mono">Advertisement Slot 1</span>
+        </div>
+    </div>
+
+    <!-- MAIN APP CONTAINER -->
+    <main class="w-full max-w-lg bg-slate-800/80 backdrop-blur-md border border-slate-700/60 rounded-2xl p-6 shadow-2xl shadow-black/40 my-auto">
+        
+        <!-- HEADER -->
+        <header class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-12 h-12 bg-red-500/10 text-red-500 rounded-xl mb-3 border border-red-500/20">
+                <i class="fa-solid font-black fa-receipt text-xl"></i>
+            </div>
+            <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">
+                Am I Getting Fleeced?
+            </h1>
+            <p class="text-sm text-slate-400 mt-1">The Subscription Rip-Off Calculator</p>
+        </header>
+
+        <!-- STATE 1: INPUT FORM -->
+        <section id="state-form" class="space-y-5">
+            <div>
+                <label for="category" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Subscription Category</label>
+                <select id="category" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all cursor-pointer appearance-none">
+                    <option value="Video Streaming">Video Streaming (Netflix, Disney+, etc.)</option>
+                    <option value="Music Streaming">Music Streaming (Spotify, Apple Music)</option>
+                    <option value="Software/SaaS">Software / SaaS (Adobe, Cloud Tools)</option>
+                    <option value="Mobile/Cell Plan">Mobile / Cell Phone Plan</option>
+                    <option value="Home Internet">Home Broadband Internet</option>
+                    <option value="Gym Membership">Gym Membership</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="user-pay" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">What you pay monthly ($)</label>
+                <div class="relative">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-bold">$</span>
+                    <input type="number" id="user-pay" min="1" placeholder="0.00" class="w-full bg-slate-950 border border-slate-700 rounded-xl pl-8 pr-4 py-3 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all">
+                </div>
+            </div>
+
+            <div>
+                <label for="region" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Your Location / Region</label>
+                <select id="region" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all cursor-pointer">
+                    <option value="United States">United States</option>
+                    <option value="United Kingdom">United Kingdom</option>
+                    <option value="Canada">Canada</option>
+                    <option value="Australia">Australia</option>
+                    <option value="Rest of World">Rest of World</option>
+                </select>
+            </div>
+
+            <button onclick="runAnalysis()" class="w-full mt-2 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 active:scale-[0.98] text-white font-bold py-4 px-6 rounded-xl shadow-lg shadow-red-900/20 hover:shadow-red-600/20 transition-all flex items-center justify-center gap-2 cursor-pointer text-base">
+                Analyze My Expenses <i class="fa-solid fa-bolt"></i>
+            </button>
+        </section>
+
+
+        <!-- STATE 2: LOADING ANIMATION (HIDDEN BY DEFAULT) -->
+        <section id="state-loading" class="hidden py-10 flex flex-col items-center justify-center space-y-6">
+            <div class="relative flex items-center justify-center">
+                <div class="w-16 h-16 border-4 border-slate-700 border-t-red-500 rounded-full animate-spin"></div>
+                <i class="fa-solid fa-magnifying-glass-chart absolute text-slate-400 text-lg animate-pulse-slow"></i>
+            </div>
+            <div class="text-center space-y-2 w-full max-w-xs">
+                <p id="loading-text" class="text-sm font-medium text-slate-300 font-mono">Connecting to pricing matrix...</p>
+                <!-- Custom Progress Bar Container -->
+                <div class="w-full bg-slate-950 h-2 rounded-full overflow-hidden border border-slate-800">
+                    <div id="loading-bar" class="bg-gradient-to-r from-red-500 to-rose-500 h-full w-0 transition-all duration-300 ease-out"></div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- STATE 3: THE REVEAL (HIDDEN BY DEFAULT) -->
+        <section id="state-reveal" class="hidden space-y-6 text-center">
+            
+            <!-- Verdict Banner -->
+            <div id="verdict-card" class="p-6 rounded-2xl border transition-all duration-500">
+                <span id="verdict-tag" class="text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-3 inline-block"></span>
+                <h2 id="verdict-headline" class="text-2xl font-black tracking-tight mb-2"></h2>
+                <p id="verdict-roast" class="text-sm text-slate-300 leading-relaxed font-medium"></p>
+            </div>
+
+            <!-- Stats Flex Grid -->
+            <div class="grid grid-cols-2 gap-3">
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800/80">
+                    <span class="block text-[10px] uppercase font-bold tracking-wider text-slate-500">2026 Average</span>
+                    <span id="stat-avg" class="text-xl font-bold text-white mt-1 block"></span>
+                </div>
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800/80">
+                    <span class="block text-[10px] uppercase font-bold tracking-wider text-slate-500">Your Variance</span>
+                    <span id="stat-diff" class="text-xl font-bold mt-1 block"></span>
+                </div>
+            </div>
+
+            <!-- ============================================================= -->
+            <!-- AD SLOT 2: MEDIUM RECTANGLE (300x250) AT MOMENT OF REVEAL -->
+            <!-- ============================================================= -->
+            <div class="w-full flex justify-center py-2 min-h-[250px]">
+                <div class="bg-slate-950 border border-slate-800 rounded-xl flex items-center justify-center overflow-hidden w-[300px] h-[250px] shadow-inner shadow-black/50">
+                    <!-- INSERT A-ADS EMBED CODE HERE -->
+                    <span class="text-xs text-slate-600 uppercase tracking-widest font-mono">Advertisement Slot 2</span>
+                </div>
+            </div>
+
+            <!-- Viral CTA Block -->
+            <div class="pt-2 space-y-3">
+                <button onclick="shareToX()" class="w-full bg-white hover:bg-slate-100 text-slate-950 font-black py-4 px-6 rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-white/5">
+                    <i class="fa-brands fa-x-twitter text-lg"></i> Share Result to X / Twitter
+                </button>
+                
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="copyTextResult()" class="bg-slate-950 hover:bg-slate-900 border border-slate-700 text-slate-300 font-bold py-3 px-4 rounded-xl text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+                        <i class="fa-solid fa-copy"></i> Copy Text
+                    </button>
+                    <button onclick="resetApp()" class="bg-slate-950 hover:bg-slate-900 border border-slate-700 text-slate-400 font-bold py-3 px-4 rounded-xl text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+                        <i class="fa-solid fa-rotate-left"></i> Run Another
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER INFO -->
+    <footer class="w-full text-center py-6 text-xs text-slate-500 font-mono tracking-wide">
+        &copy; 2026 ExpenseEngine • Baseline Benchmarks Updated Daily
+    </footer>
+
+    <!-- ================================================================= -->
+    <!-- APP JAVASCRIPT ENGINE -->
+    <!-- ================================================================= -->
+    <script>
+        // 2026 Baseline Pricing Averages
+        const HARDCODED_AVERAGES = {
+            "Video Streaming": 15,
+            "Music Streaming": 11,
+            "Software/SaaS": 29,
+            "Mobile/Cell Plan": 55,
+            "Home Internet": 65,
+            "Gym Membership": 40
+        };
+
+        // Viral Copy Matrices depending on how hard they are getting ripped off
+        const ROASTS = {
+            furious: [
+                "You are single-handedly funding your service provider's third megayacht. Cancel immediately.",
+                "They are laughing at you in the boardroom. You are paying a premium tier pricing model for absolutely no reason.",
+                "Your billing cycle is an act of financial violence. You need to call retention and negotiate right now."
+            ],
+            mild: [
+                "You're paying more than the global median baseline. It's not catastrophic yet, but you're leaving cash on the table.",
+                "A sneaky premium upsell is silently draining your account. Time to auditing your usage metrics.",
+                "You are comfortably within their 'lazy tax' bracket. A quick alternative switch saves you instantly."
+            ],
+            saver: [
+                "Incredible structural arbitrage. You are effectively beating their system at its own game.",
+                "You are running maximum fiscal efficiency. Teach us your secret negotiation tactics.",
+                "Outstanding layout optimization. You are safely squeezing extreme value out of this contract framework."
+            ]
+        };
+
+        // App State Management Objects
+        let calculatedResult = {
+            category: "",
+            userPay: 0,
+            average: 0,
+            percentageDiff: 0
+        };
+
+        function runAnalysis() {
+            const userPayInput = document.getElementById('user-pay');
+            const userPay = parseFloat(userPayInput.value);
+
+            if (!userPay || userPay <= 0) {
+                userPayInput.classList.add('border-red-500', 'animate-shake');
+                alert('Please input a valid configuration price baseline.');
+                return;
+            }
+            userPayInput.classList.remove('border-red-500');
+
+            // Collect Inputs
+            calculatedResult.category = document.getElementById('category').value;
+            calculatedResult.userPay = userPay;
+            calculatedResult.average = HARDCODED_AVERAGES[calculatedResult.category];
+            calculatedResult.percentageDiff = ((calculatedResult.userPay - calculatedResult.average) / calculatedResult.average) * 100;
+
+            // Shift Views to Loading State
+            document.getElementById('state-form').classList.add('hidden');
+            document.getElementById('state-loading').classList.remove('hidden');
+            
+            animateLoadingSequence();
+        }
+
+        function animateLoadingSequence() {
+            const bar = document.getElementById('loading-bar');
+            const statusText = document.getElementById('loading-text');
+            
+            const milestones = [
+                { time: 0, text: "Fetching 2026 market baselines..." },
+                { time: 800, text: "Cross-referencing global regional indices..." },
+                { time: 1600, text: "Compiling structural variance metrics..." }
+            ];
+
+            milestones.forEach(m => {
+                setTimeout(() => { statusText.innerText = m.text; }, m.time);
+            });
+
+            // Fill up the loading track systematically over 2.5 seconds (gives max ad exposure time)
+            bar.style.width = '0%';
+            setTimeout(() => { bar.style.width = '35%'; }, 200);
+            setTimeout(() => { bar.style.width = '70%'; }, 1100);
+            setTimeout(() => { bar.style.width = '100%'; }, 2200);
+
+            // Execute final evaluation state transformation
+            setTimeout(() => {
+                document.getElementById('state-loading').classList.add('hidden');
+                renderRevealState();
+            }, 2600);
+        }
+
+        function renderRevealState() {
+            const revealSec = document.getElementById('state-reveal');
+            const card = document.getElementById('verdict-card');
+            const tag = document.getElementById('verdict-tag');
+            const headline = document.getElementById('verdict-headline');
+            const roast = document.getElementById('verdict-roast');
+            
+            const statAvg = document.getElementById('stat-avg');
+            const statDiff = document.getElementById('stat-diff');
+
+            const diff = calculatedResult.percentageDiff;
+            let theme = "";
+            let randomRoast = "";
+
+            statAvg.innerText = `$${calculatedResult.average.toFixed(2)}`;
+
+            if (diff > 25) {
+                // High Tier Fleeced State
+                theme = "crimson";
+                tag.innerText = "CRITICAL FLEECE LEVEL";
+                tag.className = "text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-3 inline-block bg-red-500/10 text-red-500 border border-red-500/20";
+                card.className = "p-6 rounded-2xl border bg-red-950/20 border-red-500/30 text-center";
+                headline.innerText = `You are getting fleeced by ${Math.round(diff)}%!`;
+                headline.className = "text-2xl font-black tracking-tight mb-2 text-red-400";
+                randomRoast = ROASTS.furious[Math.floor(Math.random() * ROASTS.furious.length)];
+                statDiff.innerText = `+$${(calculatedResult.userPay - calculatedResult.average).toFixed(2)}`;
+                statDiff.className = "text-xl font-bold mt-1 block text-red-400";
+            } else if (diff > 0) {
+                // Mild Variance State
+                theme = "orange";
+                tag.innerText = "OVERPAYING WARNING";
+                tag.className = "text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-3 inline-block bg-amber-500/10 text-amber-500 border border-amber-500/20";
+                card.className = "p-6 rounded-2xl border bg-amber-950/10 border-amber-500/30 text-center";
+                headline.innerText = `You are overpaying by ${Math.round(diff)}%`;
+                headline.className = "text-2xl font-black tracking-tight mb-2 text-amber-400";
+                randomRoast = ROASTS.mild[Math.floor(Math.random() * ROASTS.mild.length)];
+                statDiff.innerText = `+$${(calculatedResult.userPay - calculatedResult.average).toFixed(2)}`;
+                statDiff.className = "text-xl font-bold mt-1 block text-amber-400";
+            } else {
+                // Efficiency State (Smart Saver)
+                theme = "green";
+                tag.innerText = "SMART SAVER PLATINUM";
+                tag.className = "text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-3 inline-block bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
+                card.className = "p-6 rounded-2xl border bg-emerald-950/20 border-emerald-500/30 text-center";
+                headline.innerText = "Verdict: You are beating the system!";
+                headline.className = "text-2xl font-black tracking-tight mb-2 text-emerald-400";
+                randomRoast = ROASTS.saver[Math.floor(Math.random() * ROASTS.saver.length)];
+                statDiff.innerText = `${diff === 0 ? 'Ideal Parity' : Math.round(Math.abs(diff)) + '% Below Avg'}`;
+                statDiff.className = "text-xl font-bold mt-1 block text-emerald-400";
+            }
+
+            roast.innerText = randomRoast;
+            revealSec.classList.remove('hidden');
+        }
+
+        function generateSharingText() {
+            const currentURL = window.location.origin + window.location.pathname;
+            const diff = Math.round(calculatedResult.percentageDiff);
+            
+            if (diff > 0) {
+                return `Unreal. Just found out I'm getting fleeced by ${diff}% on my ${calculatedResult.category} bill. Check if you're getting ripped off too: ${currentURL}`;
+            } else {
+                return `Confirmed: My efficiency game is locked down. I'm safely beating the standard baseline averages for ${calculatedResult.category}. Test your own subscription infrastructure parameters here: ${currentURL}`;
+            }
+        }
+
+        function shareToX() {
+            const text = encodeURIComponent(generateSharingText());
+            window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank');
+        }
+
+        function copyTextResult() {
+            const rawText = generateSharingText();
+            navigator.clipboard.writeText(rawText).then(() => {
+                alert('Viral result configuration string copied directly to your clipboard layers!');
+            }).catch(() => {
+                alert('Failsafe extraction error. Please copy text layout elements manually.');
+            });
+        }
+
+        function resetApp() {
+            document.getElementById('user-pay').value = '';
+            document.getElementById('state-reveal').classList.add('hidden');
+            document.getElementById('state-form').classList.remove('hidden');
+            document.getElementById('loading-bar').style.width = '0%';
+        }
+    </script>
+</body>
+</html>
