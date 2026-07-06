@@ -56,7 +56,7 @@
                 <p class="text-[10px] text-slate-500 font-mono tracking-wider mt-0.5">High-Velocity Algorithmic Syndication Hub</p>
             </div>
             <div class="flex items-center gap-4 text-[10px] font-mono text-slate-400 bg-slate-900/80 border border-slate-800 px-3 py-1.5 rounded-lg shadow-inner">
-                <span class="flex items-center gap-1"><i class="fa-solid fa-server text-emerald-400"></i> Feed Status: <span class="text-emerald-400 font-bold">Sync'd</span></span>
+                <span class="flex items-center gap-1"><i class="fa-solid fa-server text-emerald-400"></i> Feed Status: <span id="feed-status-text" class="text-emerald-400 font-bold">Sync'd</span></span>
                 <span class="text-slate-800">|</span>
                 <span id="next-update">Network Ready</span>
             </div>
@@ -76,7 +76,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start mb-8">
             
             <!-- SECTION A: LATEST MAIN NEWS (TAKES UP 2 COLUMNS ON DESKTOP) -->
-            <section class="lg:col-span-2 space-y-4Order">
+            <section class="lg:col-span-2 space-y-4">
                 <div class="flex items-center justify-between border-b border-slate-800 pb-2 mb-4">
                     <h2 class="text-xs font-bold uppercase tracking-widest text-slate-400 flex items-center gap-2">
                         <i class="fa-solid fa-newspaper text-emerald-500"></i> Main Editorial Wire
@@ -85,7 +85,8 @@
                 </div>
                 
                 <div id="main-news-container" class="space-y-4">
-                    <!-- 3 Main Curated Articles Injected Here Dynamically -->
+                    <!-- Live Curated CryptoCompare Articles Injected Here Dynamically -->
+                    <div class="text-xs font-mono text-slate-500 animate-pulse">Syncing dynamic editorial wires...</div>
                 </div>
             </section>
 
@@ -129,7 +130,7 @@
                         <i class="fa-solid fa-gears text-slate-500"></i> Terminal Diagnostics
                     </h3>
                     <p class="text-xs text-slate-400 leading-relaxed font-sans">
-                        Pricing architecture pulls directly via public REST endpoints. Client tickers employ a automatic 60-second caching sequence to preserve threshold safety barriers.
+                        Pricing architecture pulls directly via public REST endpoints. Client tickers employ an automatic 60-second caching sequence to preserve threshold safety barriers.
                     </p>
                     <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between">
                         <span class="text-[10px] font-mono text-slate-500">System Clock:</span>
@@ -167,14 +168,10 @@
     <!-- COMPILATION ENGINE & INJECTION CORE LOGIC                        -->
     <!-- ================================================================= -->
     <script>
-        // Data Store 1: 3 Main High-Importance Curated Articles
-        const MAIN_EDITORIAL_WIRE = [
-            { id: 101, tag: "MARKET INTELLIGENCE", time: "12m ago", title: "Global Liquidity Matrix Signals Imminent Institutional Inflow Stage Across Layer-1 Networks", excerpt: "Cross-border trading indicators have hit optimization vectors last observed prior to major previous cycles, hinting at macro shifts.", body: "Analysis of quantitative asset indices indicates a deep aggregation of capital matching automated clearing house deployment parameters. Large corporate registries have quietly updated smart asset frameworks across tier-one distributed structures, ensuring seamless pipeline liquidity deployment ahead of coming policy changes." },
-            { id: 102, tag: "ETHEREUM STACK", time: "34m ago", title: "Computational Base Execution Fees Crash 92% as Layer-2 Interoperability Triggers Optimization", excerpt: "Structural base engine data modifications completely minimize storage settlement costs across execution clusters.", body: "Engineers have successfully committed deep scaling updates to global smart contract networks, reducing resource load factors significantly. Transaction speeds across integrated sidechains have climbed past record thresholds while computational gas footprints have shrunk to flat sub-penny baselines." },
-            { id: 103, tag: "DECENTRALIZED GOVERNANCE", time: "1h ago", title: "Automated Regulatory Clearances Passed For Major Public Multi-Chain Sovereign Pools", excerpt: "Unified algorithmic tracking policies officially declare core non-custodial validation channels compliant with multi-state rules.", body: "A landmark multi-jurisdictional review board has cleared baseline decentralized liquidity pools from previous restrictions. The updated classification separates programmatic protocol operations from standard financial asset regulations, laying down clean development pathways for banking system integration maps." }
-        ];
+        // Runtime Reactive Memory Cache for parsed API News Items
+        let LIVE_EDITORIAL_CACHE = [];
 
-        // Data Store 2: Exactly 10 High-Velocity Flash Stream Elements
+        // Data Store 2: Exactly 10 High-Velocity Flash Stream Elements (Preserved Mock Tracker)
         const FLASH_STREAMS_WIRE = [
             { time: "01m ago", asset: "BTC", alert: "Whale Wallet Migration", desc: "1,200 BTC mobilized from 2013 cold storage into institutional deposit nodes.", impact: "HIGH", positive: true },
             { time: "05m ago", asset: "SOL", alert: "DEX Volume Spike", desc: "Decentralized throughput velocity hits record 42,000 transactions per block.", impact: "MID", positive: true },
@@ -193,12 +190,15 @@
         // Platform Main Thread Initialization Setup
         document.addEventListener("DOMContentLoaded", () => {
             initializeTickerEngine();
-            compileEditorialWire();
+            fetchCryptoCompareNews(); // Replaced static compiler with live API loop
             compileFlashStreams();
             runSystemClocks();
 
-            // Auto-Refresh Price Arrays every 60 seconds (protects free API keys)
-            setInterval(initializeTickerEngine, 60000);
+            // Auto-Refresh Price Arrays & News every 60 seconds
+            setInterval(() => {
+                initializeTickerEngine();
+                fetchCryptoCompareNews();
+            }, 60000);
         });
 
         async function initializeTickerEngine() {
@@ -257,23 +257,73 @@
             document.getElementById("ticker-track-2").innerHTML = "";
         }
 
-        function compileEditorialWire() {
+        // Fetching News Live from CryptoCompare Public API (Free Tier Endpoint)
+        async function fetchCryptoCompareNews() {
             const container = document.getElementById("main-news-container");
-            container.innerHTML = MAIN_EDITORIAL_WIRE.map(article => `
-                <article class="bg-slate-900/30 border border-slate-800/80 hover:border-slate-700/60 p-5 rounded-xl transition-all group flex flex-col justify-between space-y-3 shadow-md">
-                    <div class="space-y-1.5">
-                        <div class="flex items-center justify-between text-[9px] font-mono">
-                            <span class="text-emerald-400 font-bold tracking-widest bg-emerald-500/5 px-2 py-0.5 rounded border border-emerald-500/10">${article.tag}</span>
-                            <span class="text-slate-500">${article.time}</span>
+            const statusText = document.getElementById("feed-status-text");
+            // Optional: Append '&api_key=YOUR_KEY' if you configure an explicit profile key later.
+            const newsEndpoint = "https://min-api.cryptocompare.com/data/v2/news/?lang=EN";
+
+            try {
+                const response = await fetch(newsEndpoint);
+                if (!response.ok) throw new Error(`News Pipeline Interrupted: ${response.status}`);
+                
+                const result = await response.json();
+                const articles = result.Data || [];
+
+                if (articles.length === 0) {
+                    container.innerHTML = `<p class="text-xs text-slate-500 font-mono">Zero response streams active.</p>`;
+                    return;
+                }
+
+                // Cache the first 5 elements globally to power the target ID interactive modal mechanics
+                LIVE_EDITORIAL_CACHE = articles.slice(0, 5).map((art, idx) => ({
+                    id: idx,
+                    tag: art.categories.split('|')[0] || "MARKET UPDATE",
+                    time: calculateRelativeTime(art.published_on),
+                    title: art.title,
+                    excerpt: art.body.substring(0, 140) + "...",
+                    body: art.body,
+                    image: art.imageurl,
+                    source: art.source_info.name || "Crypto Wire"
+                }));
+
+                // Render dynamic card sets to layout stream
+                container.innerHTML = LIVE_EDITORIAL_CACHE.map(article => `
+                    <article class="bg-slate-900/30 border border-slate-800/80 hover:border-slate-700/60 p-5 rounded-xl transition-all group flex flex-col sm:flex-row gap-4 justify-between items-start shadow-md">
+                        <img src="${article.image}" alt="Wire Thumb" class="w-full sm:w-24 h-20 object-cover rounded-lg border border-slate-800 bg-slate-950 flex-shrink-0" />
+                        <div class="space-y-1.5 flex-1 w-full">
+                            <div class="flex items-center justify-between text-[9px] font-mono">
+                                <span class="text-emerald-400 font-bold tracking-widest bg-emerald-500/5 px-2 py-0.5 rounded border border-emerald-500/10 uppercase">${article.tag}</span>
+                                <span class="text-slate-500">${article.time}</span>
+                            </div>
+                            <h3 class="font-bold text-sm text-slate-200 group-hover:text-white transition-colors leading-snug">${article.title}</h3>
+                            <p class="text-xs text-slate-400 leading-relaxed font-sans">${article.excerpt}</p>
+                            <button onclick="openModal(${article.id})" class="text-[10px] font-mono font-bold text-slate-400 hover:text-white flex items-center gap-1 transition-colors cursor-pointer pt-2">
+                                Read System Wire <i class="fa-solid fa-chevron-right text-[8px] text-slate-600"></i>
+                            </button>
                         </div>
-                        <h3 class="font-bold text-sm text-slate-200 group-hover:text-white transition-colors leading-snug">${article.title}</h3>
-                        <p class="text-xs text-slate-400 leading-relaxed font-sans">${article.excerpt}</p>
-                    </div>
-                    <button onclick="openModal(${article.id}, 'editorial')" class="text-[10px] font-mono font-bold text-slate-400 hover:text-white flex items-center gap-1 transition-colors cursor-pointer pt-1">
-                        Read System Wire <i class="fa-solid fa-chevron-right text-[8px] text-slate-600"></i>
-                    </button>
-                </article>
-            `).join('');
+                    </article>
+                `).join('');
+
+                statusText.innerText = "Sync'd";
+                statusText.className = "text-emerald-400 font-bold";
+
+            } catch (error) {
+                console.error("CryptoCompare extraction exception:", error);
+                statusText.innerText = "Error";
+                statusText.className = "text-red-500 font-bold";
+                container.innerHTML = `<p class="text-xs text-red-400 font-mono"><i class="fa-solid fa-triangle-exclamation"></i> Editorial Wire aggregation failure. Retrying sync loop...</p>`;
+            }
+        }
+
+        function calculateRelativeTime(timestamp) {
+            const passed = Math.floor(Date.now() / 1000) - timestamp;
+            if (passed < 60) return "Just now";
+            const mins = Math.floor(passed / 60);
+            if (mins < 60) return `${mins}m ago`;
+            const hrs = Math.floor(mins / 60);
+            return `${hrs}h ago`;
         }
 
         function compileFlashStreams() {
@@ -303,7 +353,6 @@
             const clockSpan = document.getElementById("live-clock");
 
             setInterval(() => {
-                // Countdown execution updates
                 countdownTimer--;
                 if (countdownTimer <= 0) {
                     timerSpan.innerText = "Re-allocating node data...";
@@ -311,19 +360,18 @@
                     timerSpan.innerText = `Refresh In: ${countdownTimer}s`;
                 }
 
-                // Global UTC Live Clock Display
                 const d = new Date();
                 clockSpan.innerText = d.toUTCString().replace("GMT", "UTC");
             }, 1000);
         }
 
-        function openModal(id, source) {
-            const article = MAIN_EDITORIAL_WIRE.find(a => a.id === id);
+        function openModal(id) {
+            const article = LIVE_EDITORIAL_CACHE.find(a => a.id === id);
             if (!article) return;
 
             document.getElementById("modal-tag").innerText = article.tag;
             document.getElementById("modal-title").innerText = article.title;
-            document.getElementById("modal-meta").innerText = `LOG SOURCE: EDITORIAL WIRE // PIPELINE ID: ${article.id}`;
+            document.getElementById("modal-meta").innerText = `LOG SOURCE: ${article.source.toUpperCase()} // RELATIVE TIME: ${article.time.toUpperCase()}`;
             document.getElementById("modal-body").innerText = article.body;
 
             const target = document.getElementById("read-modal");
