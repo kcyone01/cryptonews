@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <!-- CRUCIAL FOR MOBILE RESPONSIVENESS -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <title>CryptoTerminal Pro Live</title>
     <style>
@@ -20,7 +19,7 @@
             --accent-htx: #007aff;
         }
 
-        /* Prevent unwanted mobile horizontal bouncing */
+        /* Prevent unwanted horizontal viewport scrolling */
         html, body {
             overflow-x: hidden;
             width: 100%;
@@ -31,7 +30,7 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
-        /* Top 10 Ticker Container */
+        /* Endless Scrolling Ticker Header */
         .ticker-wrap {
             background: #02040a;
             border-bottom: 1px solid var(--border-color);
@@ -51,7 +50,17 @@
         .ticker-pct.up { color: var(--bullish); }
         .ticker-pct.down { color: var(--bearish); }
 
-        /* Full Page Fluid Constraints */
+        /* Dynamic Asset Icon Sizing */
+        .coin-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: inline-block;
+            vertical-align: middle;
+            background: #1e293b;
+        }
+
+        /* Fluid Main Application Workspace Layout Container */
         .main-layout { 
             width: 100%;
             max-width: 1700px; 
@@ -60,25 +69,26 @@
             box-sizing: border-box;
         }
 
-        /* --- 📱 MOBILE-FIRST HERO AREA LAYOUT (Default: Vertical stack) --- */
+        /* --- MOBILE-FIRST HERO AREA LAYOUT (Default: Stacked row) --- */
         .hero-grid {
             display: grid;
             grid-template-columns: 1fr;
             gap: 16px;
-            margin-bottom: 30px;
+            margin-bottom: 35px;
         }
 
+        /* Sizing boundaries for Technical Chart viewport component */
         .chart-box {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: 12px;
             padding: 8px;
-            height: 340px; /* Touchscreen ergonomic target height */
+            height: 340px; 
             box-sizing: border-box;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
         }
 
-        /* Hide bulky vertical ads on small screens to keep pages clean */
+        /* Hide static ads by default on narrow mobile screens */
         .ad-side {
             display: none;
             background: #1e293b20;
@@ -93,18 +103,29 @@
             text-align: center;
             box-sizing: border-box;
         }
-        .ad-native { width: 100%; height: 65px; margin: 10px 0; background: #1e293b20; border: 1px dashed #334155; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--text-muted); }
+        .ad-native { 
+            width: 100%; 
+            height: 65px; 
+            margin: 10px 0; 
+            background: #1e293b20; 
+            border: 1px dashed #334155; 
+            border-radius: 6px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 11px; 
+            color: var(--text-muted); 
+        }
 
-        /* --- 📱 MOBILE-FIRST NEWS COLUMNS (Adaptive Column Repeaters) --- */
+        /* --- MOBILE-FIRST NEWS GRID (Defaults to 1 vertical line list) --- */
         .feed-container { 
             display: grid;
-            /* Auto-fit dynamically sizes columns based on screen room */
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 16px;
         }
         
         @media (min-width: 600px) and (max-width: 1024px) {
-            /* Forces clean 2x2 grid behavior on common tablet interfaces */
+            /* 2x2 grid layout for tablets */
             .feed-container {
                 grid-template-columns: repeat(2, 1fr);
             }
@@ -115,7 +136,7 @@
             border: 1px solid var(--border-color);
             border-radius: 10px;
             padding: 16px;
-            height: max-content; /* Lets data dictate depth without clipping bottom rows */
+            height: max-content; 
         }
         .column-title { 
             font-size: 14px; 
@@ -126,7 +147,7 @@
             gap: 6px;
         }
         
-        /* Interactive Data News Templates */
+        /* Terminal News Output Card styling */
         .news-item { 
             background: rgba(255, 255, 255, 0.01); 
             padding: 12px; 
@@ -148,24 +169,23 @@
         .news-title:hover { color: #60a5fa; }
         .news-meta { font-size: 10px; color: var(--text-muted); margin-top: 6px; display: flex; justify-content: space-between; }
 
-
-        /* --- 🖥️ LARGESCREEN DESKTOP DESIGN RULES (Screens broader than 1025px) --- */
+        /* --- 🖥️ DESKTOP RULES OVERRIDES (Viewport scale larger than 1025px wide) --- */
         @media (min-width: 1025px) {
             .hero-grid {
-                grid-template-columns: 250px 1fr 250px; /* Restore horizontal space dividers */
+                grid-template-columns: 250px 1fr 250px; 
                 align-items: stretch;
             }
             .chart-box {
-                height: 426px; /* Return terminal visual index weight */
+                height: 426px; 
                 padding: 12px;
             }
             .ad-side {
-                display: flex; /* Sidebar frames return gracefully to the flanks */
+                display: flex; 
                 width: 250px;
                 height: 426px;
             }
             .feed-container {
-                grid-template-columns: repeat(4, 1fr); /* Clean horizontal split for large monitors */
+                grid-template-columns: repeat(4, 1fr); 
             }
         }
 
@@ -174,16 +194,13 @@
 </head>
 <body>
 
-    <!-- 10-Coin Scrolling Header Ticker -->
     <div class="ticker-wrap"><div class="ticker-track" id="ticker-track">Syncing market indices...</div></div>
 
     <div class="main-layout">
         
-        <!-- Adaptive Hero Deck -->
         <div class="hero-grid">
             <div class="ad-side"><div>Vertical Skyscraper<br>Ad Slot (250x425)</div></div>
             
-            <!-- Target Content Window Frame -->
             <div class="chart-box">
                 <div id="tradingview_btc" style="height: 100%; width: 100%;"></div>
             </div>
@@ -191,7 +208,6 @@
             <div class="ad-side"><div>Vertical Skyscraper<br>Ad Slot (250x425)</div></div>
         </div>
 
-        <!-- 4-Channel News Workspace Matrix -->
         <div class="feed-container">
             
             <div class="column">
@@ -217,9 +233,9 @@
         </div>
     </div>
 
-    <!-- Script Implementations -->
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script type="text/javascript">
+        // Inject Core Interactive Bitcoin Technical Chart Frame
         new TradingView.widget({
             "width": "100%",
             "height": "100%",
@@ -237,6 +253,7 @@
     </script>
 
     <script>
+        // Fetch Live Pricing Arrays + Vector Crypto Graphics using Binance Public API
         async function fetchTopTenPrices() {
             try {
                 const pairs = ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'SOLUSDT', 'XRPUSDT', 'ADAUSDT', 'LINKUSDT', 'DOTUSDT', 'MATICUSDT', 'DOGEUSDT'];
@@ -252,12 +269,18 @@
                         rank: index + 1 
                     };
                 });
+                
+                // Duplicate data metrics to maintain infinite horizontal scroll looping
                 const doubledData = [...formattedCoins, ...formattedCoins];
                 doubledData.forEach((coin) => {
+                    const symbolLower = coin.symbol.toLowerCase();
+                    const iconUrl = `https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/${symbolLower}.png`;
+
                     tickerHtml += `
                         <div class="ticker-item">
                             <span class="ticker-rank">#${coin.rank}</span>
-                            <span>${coin.symbol}</span>
+                            <img src="${iconUrl}" class="coin-icon" alt="${coin.symbol}" onerror="this.style.display='none'">
+                            <span style="margin-left: 2px;">${coin.symbol}</span>
                             <span>$${coin.price.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
                             <span class="ticker-pct ${coin.pct >= 0 ? 'up' : 'down'}">${coin.pct >= 0 ? '▲' : '▼'}${Math.abs(coin.pct).toFixed(2)}%</span>
                         </div>
@@ -267,6 +290,7 @@
             } catch (err) { }
         }
 
+        // Fetch RSS feeds with an embedded timestamp cache-buster parameter
         async function loadChannel(rssUrl, elementId, itemClass) {
             const cacheBuster = `&_cb=${new Date().getTime()}`;
             const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}${cacheBuster}`;
@@ -286,6 +310,7 @@
                                 </div>
                             </div>
                         `;
+                        // Native Sponsor Ad Slot under card #3 inside the Google Column
                         if (index === 2 && elementId === 'google-feed') {
                             html += `<div class="ad-native"><div>Sponsored Content Insertion Segment</div></div>`;
                         }
@@ -299,9 +324,11 @@
             }
         }
 
+        // Launch Application Routines
         fetchTopTenPrices();
-        setInterval(fetchTopTenPrices, 30000);
+        setInterval(fetchTopTenPrices, 30000); // 30-second price ticker refresh rate
 
+        // Connect data streams
         loadChannel('https://news.google.com/rss/search?q=crypto&hl=en-US&gl=US&ceid=US:en', 'google-feed', 'google-item');
         loadChannel('https://finance.yahoo.com/news/rssindex', 'yahoo-feed', 'yahoo-item');
         loadChannel('https://news.google.com/rss/search?q=Binance+listing+announcement&hl=en-US&gl=US&ceid=US:en', 'binance-feed', 'binance-item');
