@@ -54,8 +54,8 @@
             display: grid;
             grid-template-columns: 250px 1fr 250px;
             gap: 20px;
-            align-items: start;
-            margin-bottom: 20px;
+            align-items: stretch; /* Forces elements to line up evenly */
+            margin-bottom: 35px;  /* FIX: Pushes the news columns safely downwards */
         }
 
         /* Responsive adjustments for Top Chart Grid */
@@ -72,7 +72,8 @@
             border: 1px solid var(--border-color);
             border-radius: 12px;
             padding: 12px;
-            height: 400px;
+            height: 426px; /* FIX: Matches the exact physical height of the side ads */
+            box-sizing: border-box; /* Ensures padding doesn't cause overflow bugs */
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
         }
 
