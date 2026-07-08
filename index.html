@@ -205,9 +205,9 @@
         fetchTopTenPrices();
         setInterval(fetchTopTenPrices, 60000);
 
-        // Targeted API Aggregator endpoints
-        loadChannel('https://news.google.com/rss/search?q=site:binance.com/en/support/announcement&hl=en-US&gl=US&ceid=US:en', 'binance-feed', 'binance-item');
-        loadChannel('https://news.google.com/rss/search?q=site:htx.com/support/en-us/list/&hl=en-US&gl=US&ceid=US:en', 'htx-feed', 'htx-item');
+        // Updated, highly flexible query routes that bypass strict path tracking:
+        loadChannel('https://news.google.com/rss/search?q=Binance+listing+announcement&hl=en-US&gl=US&ceid=US:en', 'binance-feed', 'binance-item');
+        loadChannel('https://news.google.com/rss/search?q=HTX+Huobi+announcement+listing&hl=en-US&gl=US&ceid=US:en', 'htx-feed', 'htx-item');
         loadChannel('https://finance.yahoo.com/news/rssindex', 'yahoo-feed', 'yahoo-item');
         loadChannel('https://news.google.com/rss/search?q=crypto&hl=en-US&gl=US&ceid=US:en', 'google-feed', 'google-item');
     </script>
