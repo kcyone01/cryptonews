@@ -3,387 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CryptoPulse Pro — Main News & Institutional Flash Terminal</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <!-- FontAwesome Core Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Crypto Feed Terminal</title>
     <style>
-        /* CSS Infinite Ticker Marquee Loop Animation */
-        @keyframes marquee {
-            0% { transform: translateX(0%); }
-            100% { transform: translateX(-50%); }
-        }
-        .animate-marquee {
-            display: flex;
-            width: max-content;
-            animation: marquee 35s linear infinite;
-        }
-        .animate-marquee:hover {
-            animation-play-state: paused;
-        }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0f172a; color: #e2e8f0; margin: 0; padding: 15px; }
+        .ticker { display: flex; gap: 15px; background: #1e293b; padding: 10px; border-radius: 8px; margin-bottom: 15px; font-weight: bold; overflow-x: auto; }
+        .coin { white-space: nowrap; font-size: 14px; }
+        .coin span { color: #10b981; }
+        
+        /* Two Column Layout */
+        .feed-container { display: flex; gap: 15px; flex-wrap: wrap; }
+        .column { flex: 1; min-width: 280px; }
+        .column-title { font-size: 16px; font-weight: bold; margin-bottom: 10px; color: #94a3b8; border-bottom: 2px solid #334155; padding-bottom: 5px; }
+        
+        .news-item { background: #1e293b; padding: 12px; border-radius: 8px; margin-bottom: 10px; }
+        .yahoo-item { border-left: 4px solid #a855f7; } /* Purple for Yahoo */
+        .google-item { border-left: 4px solid #3b82f6; } /* Blue for Google */
+        
+        .news-title { font-weight: 600; color: #f8fafc; text-decoration: none; font-size: 14px; display: block; line-height: 1.4; }
+        .news-title:hover { text-decoration: underline; }
+        .news-meta { font-size: 11px; color: #64748b; margin-top: 5px; }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col pt-12 select-none selection:bg-emerald-500 selection:text-slate-950 font-sans">
+<body>
 
-    <!-- ================================================================= -->
-    <!-- FLOATING TOP 10 COIN TICKER (LIVE COINGECKO INTERACTION)           -->
-    <!-- ================================================================= -->
-    <div class="fixed top-0 left-0 w-full bg-slate-900/95 backdrop-blur-md border-b border-slate-800/80 h-12 flex items-center overflow-hidden z-50">
-        <div id="ticker-container" class="animate-marquee gap-8 items-center">
-            <div id="ticker-track-1" class="flex gap-8 items-center font-mono text-xs tracking-tight pr-4">
-                <span class="text-slate-500 animate-pulse uppercase pl-4">Connecting to CoinGecko Pricing Node...</span>
-            </div>
-            <div id="ticker-track-2" class="flex gap-8 items-center font-mono text-xs tracking-tight pr-4"></div>
+    <!-- Real-time Price Ticker -->
+    <div class="ticker" id="ticker">Loading live prices...</div>
+
+    <!-- Dual Feed Dashboard -->
+    <div class="feed-container">
+        <!-- Yahoo Finance Column -->
+        <div class="column">
+            <div class="column-title">💜 Yahoo Finance Crypto</div>
+            <div id="yahoo-feed">Loading...</div>
         </div>
-    </div>
-
-    <!-- MAIN PLATFORM ARCHITECTURE WRAPPER -->
-    <div class="w-full max-w-7xl mx-auto px-4 md:px-6 flex-1 flex flex-col mt-4">
         
-        <!-- INTEL TERMINAL STATUS CONTROLS -->
-        <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center py-4 border-b border-slate-800 gap-4 mb-6">
-            <div>
-                <div class="flex items-center gap-2">
-                    <span class="flex h-2.5 w-2.5 relative">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-                    </span>
-                    <h1 class="text-lg font-black uppercase tracking-widest bg-gradient-to-r from-white via-slate-300 to-slate-600 bg-clip-text text-transparent">
-                        CryptoPulse Newsroom
-                    </h1>
-                </div>
-                <p class="text-[10px] text-slate-500 font-mono tracking-wider mt-0.5">High-Velocity Algorithmic Syndication Hub</p>
-            </div>
-            <div class="flex items-center gap-4 text-[10px] font-mono text-slate-400 bg-slate-900/80 border border-slate-800 px-3 py-1.5 rounded-lg shadow-inner">
-                <span class="flex items-center gap-1"><i class="fa-solid fa-server text-emerald-400"></i> Feed Status: <span id="feed-status-text" class="text-emerald-400 font-bold">Sync'd</span></span>
-                <span class="text-slate-800">|</span>
-                <span id="next-update">Network Ready</span>
-            </div>
-        </header>
-
-        <!-- ================================================================= -->
-        <!-- MONETIZATION REGION 1: 728x90 MONITOR LEADERBOARD                 -->
-        <!-- ================================================================= -->
-        <div class="w-full flex justify-center mb-6 min-h-[50px] md:min-h-[90px]">
-            <div class="bg-slate-900/60 border border-slate-800/80 rounded-xl flex items-center justify-center overflow-hidden w-[320px] h-[50px] md:w-[728px] md:h-[90px] shadow-lg shadow-black/40">
-                <!-- INSERT A-ADS EMBED CODE HERE -->
-                <span class="text-[10px] text-slate-600 uppercase tracking-widest font-mono">Monetization Ad Framework 1 (728x90)</span>
-            </div>
-        </div>
-
-        <!-- THREE-COLUMN MASTER MATRIX LAYOUT -->
-        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start mb-8">
-            
-            <!-- SECTION A: LATEST MAIN NEWS (TAKES UP 2 COLUMNS ON DESKTOP) -->
-            <section class="lg:col-span-2 space-y-4">
-                <div class="flex items-center justify-between border-b border-slate-800 pb-2 mb-4">
-                    <h2 class="text-xs font-bold uppercase tracking-widest text-slate-400 flex items-center gap-2">
-                        <i class="fa-solid fa-newspaper text-emerald-500"></i> Main Editorial Wire
-                    </h2>
-                    <span class="text-[10px] font-mono text-slate-500 bg-slate-900 px-2 py-0.5 rounded border border-slate-800">Top Coverage</span>
-                </div>
-                
-                <div id="main-news-container" class="space-y-4">
-                    <!-- Live Curated CryptoCompare Articles Injected Here Dynamically -->
-                    <div class="text-xs font-mono text-slate-500 animate-pulse">Syncing dynamic editorial wires...</div>
-                </div>
-            </section>
-
-            <!-- SECTION B: THE 10 FLASH STREAMS DECK (TAKES UP 1 COLUMN ON DESKTOP) -->
-            <section class="space-y-4">
-                <div class="flex items-center justify-between border-b border-slate-800 pb-2 mb-4">
-                    <h2 class="text-xs font-bold uppercase tracking-widest text-slate-400 flex items-center gap-2">
-                        <i class="fa-solid fa-bolt text-amber-500 animate-pulse"></i> 10 Live Flash Streams
-                    </h2>
-                    <span class="text-[10px] font-mono text-amber-500 bg-amber-500/5 px-2 py-0.5 rounded border border-amber-500/10">Real-Time</span>
-                </div>
-
-                <div id="flash-streams-container" class="space-y-2 max-h-[720px] overflow-y-auto pr-1">
-                    <!-- 10 Micro Flash Update Nodes Injected Here Dynamically -->
-                </div>
-            </section>
-
-            <!-- SECTION C: MONETIZATION SIDEBAR + UTILITY (TAKES UP 1 COLUMN) -->
-            <aside class="space-y-6">
-                <div>
-                    <div class="flex items-center border-b border-slate-800 pb-2 mb-4">
-                        <h2 class="text-xs font-bold uppercase tracking-widest text-slate-400 flex items-center gap-2">
-                            <i class="fa-solid fa-rectangle-ad text-blue-500"></i> Sponsored Placement
-                        </h2>
-                    </div>
-                    
-                    <!-- ============================================================= -->
-                    <!-- MONETIZATION REGION 2: 300x250 MEDIUM SIDEBAR RECTANGLE        -->
-                    <!-- ============================================================= -->
-                    <div class="w-full flex justify-center py-1 min-h-[250px]">
-                        <div class="bg-slate-900/60 border border-slate-800 rounded-xl flex items-center justify-center overflow-hidden w-[300px] h-[250px] shadow-inner shadow-black/80">
-                            <!-- INSERT A-ADS EMBED CODE HERE -->
-                            <span class="text-[10px] text-slate-600 uppercase tracking-widest font-mono">Monetization Ad Framework 2 (300x250)</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- DYNAMIC MARKET OVERVIEW SNAPSHOT BOX -->
-                <div class="bg-slate-900/40 border border-slate-800/80 rounded-xl p-4 space-y-3 shadow-md">
-                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
-                        <i class="fa-solid fa-gears text-slate-500"></i> Terminal Diagnostics
-                    </h3>
-                    <p class="text-xs text-slate-400 leading-relaxed font-sans">
-                        Pricing architecture pulls directly via public REST endpoints. Client tickers employ an automatic 60-second caching sequence to preserve threshold safety barriers.
-                    </p>
-                    <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between">
-                        <span class="text-[10px] font-mono text-slate-500">System Clock:</span>
-                        <span id="live-clock" class="text-[10px] font-mono text-slate-400 font-bold">00:00:00 UTC</span>
-                    </div>
-                </div>
-            </aside>
-
+        <!-- Google News Column -->
+        <div class="column">
+            <div class="column-title">💙 Google News</div>
+            <div id="google-feed">Loading...</div>
         </div>
     </div>
 
-    <!-- TERMINAL POPUP READ VIEW MODAL OVERLAY -->
-    <div id="read-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 items-center justify-center p-4 hidden">
-        <div class="bg-slate-900 border border-slate-800 max-w-lg w-full rounded-2xl p-6 shadow-2xl space-y-4">
-            <div class="flex justify-between items-start gap-4">
-                <span id="modal-tag" class="text-[9px] font-mono font-bold tracking-widest text-emerald-400 uppercase bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20"></span>
-                <button onclick="closeModal()" class="text-slate-500 hover:text-white transition-colors cursor-pointer"><i class="fa-solid fa-xmark text-base"></i></button>
-            </div>
-            <h3 id="modal-title" class="text-base font-black leading-snug text-white"></h3>
-            <p id="modal-meta" class="text-[10px] font-mono text-slate-500"></p>
-            <hr class="border-slate-800" />
-            <p id="modal-body" class="text-xs text-slate-300 leading-relaxed font-sans"></p>
-            <div class="pt-2 flex justify-end">
-                <button onclick="closeModal()" class="bg-slate-800 hover:bg-slate-700 text-[10px] font-mono font-bold text-white px-3 py-1.5 rounded-lg cursor-pointer transition-colors">Terminate View</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MASTER FOOTER CONTEXT -->
-    <footer class="border-t border-slate-900 w-full text-center py-4 text-[10px] font-mono text-slate-600 tracking-wider bg-slate-950">
-        &copy; 2026 CryptoPulse Global Terminal Node • Integration Clean Sandbox Framework
-    </footer>
-
-    <!-- ================================================================= -->
-    <!-- COMPILATION ENGINE & INJECTION CORE LOGIC                        -->
-    <!-- ================================================================= -->
     <script>
-        // Runtime Reactive Memory Cache for parsed API News Items
-        let LIVE_EDITORIAL_CACHE = [];
-
-        // Data Store 2: Exactly 10 High-Velocity Flash Stream Elements (Preserved Mock Tracker)
-        const FLASH_STREAMS_WIRE = [
-            { time: "01m ago", asset: "BTC", alert: "Whale Wallet Migration", desc: "1,200 BTC mobilized from 2013 cold storage into institutional deposit nodes.", impact: "HIGH", positive: true },
-            { time: "05m ago", asset: "SOL", alert: "DEX Volume Spike", desc: "Decentralized throughput velocity hits record 42,000 transactions per block.", impact: "MID", positive: true },
-            { time: "09m ago", asset: "GAS", alert: "Network Deflation", desc: "Automated fee burn mechanism permanently eliminates 4,500 ETH from circulating caps.", impact: "HIGH", positive: true },
-            { time: "12m ago", asset: "USDT", alert: "Treasury Issuance", desc: "Stablecoin protocol mints 1 Billion liquidity assets on base clearing layer.", impact: "MID", positive: true },
-            { time: "18m ago", asset: "LINK", alert: "Oracle Node Update", desc: "Cross-chain data relays integrate automated feeds into 14 premium banking apps.", impact: "HIGH", positive: true },
-            { time: "24m ago", asset: "XRP", alert: "Settlement Protocol", desc: "Cross-border clearing engine clears major transaction trial with European nodes.", impact: "MID", positive: true },
-            { time: "31m ago", asset: "MIA", alert: "ASIC Hash Rate Surge", desc: "Global validation computational density scales up by 18% inside localized grids.", impact: "LOW", positive: true },
-            { time: "40m ago", asset: "ARB", alert: "Sequencer Load Alert", desc: "Layer-2 aggregation node balances scaling capacity efficiently amid volume spikes.", impact: "LOW", positive: true },
-            { time: "49m ago", asset: "AVAX", alert: "Subnet Activation", desc: "Major institutional asset gaming ecosystem launches dedicated validator track.", impact: "MID", positive: true },
-            { time: "55m ago", asset: "DOT", alert: "Parachain Auction", desc: "Sovereign data platform locks up 12 Million native system tokens for core leasing.", impact: "LOW", positive: true }
-        ];
-
-        let countdownTimer = 60;
-
-        // Platform Main Thread Initialization Setup
-        document.addEventListener("DOMContentLoaded", () => {
-            initializeTickerEngine();
-            fetchCryptoCompareNews(); // Replaced static compiler with live API loop
-            compileFlashStreams();
-            runSystemClocks();
-
-            // Auto-Refresh Price Arrays & News every 60 seconds
-            setInterval(() => {
-                initializeTickerEngine();
-                fetchCryptoCompareNews();
-            }, 60000);
-        });
-
-        async function initializeTickerEngine() {
-            const endpoint = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false&price_change_percentage=24h";
+        // Fetch Prices from CoinGecko Public Demo API
+        async function fetchPrices() {
             try {
-                const res = await fetch(endpoint);
-                if (!res.ok) throw new Error(`API Connection Fault: ${res.status}`);
-                const metrics = await res.json();
-                renderTickerHTML(metrics);
-                countdownTimer = 60;
+                const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd');
+                const data = await res.json();
+                document.getElementById('ticker').innerHTML = `
+                    <div class="coin">BTC: <span>$${data.bitcoin.usd.toLocaleString()}</span></div>
+                    <div class="coin">ETH: <span>$${data.ethereum.usd.toLocaleString()}</span></div>
+                    <div class="coin">SOL: <span>$${data.solana.usd.toLocaleString()}</span></div>
+                `;
             } catch (err) {
-                console.warn("CoinGecko rate limiter reached, deploying local recovery matrix:", err);
-                deployLocalTickerFallback();
+                document.getElementById('ticker').innerText = "Failed to load prices.";
             }
         }
 
-        function renderTickerHTML(coins) {
-            const t1 = document.getElementById("ticker-track-1");
-            const t2 = document.getElementById("ticker-track-2");
-            let buffer = "";
-
-            coins.forEach((coin, idx) => {
-                const rank = idx + 1;
-                const sym = coin.symbol.toUpperCase();
-                const rate = coin.current_price.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
-                const delta = coin.price_change_percentage_24h || 0;
-                const isUp = delta >= 0;
-
-                buffer += `
-                    <div class="flex items-center gap-2 whitespace-nowrap bg-slate-950/60 px-3 py-1 rounded-lg border border-slate-800/80">
-                        <span class="text-[9px] text-slate-500 font-bold bg-slate-900 px-1 py-0.5 rounded border border-slate-800">#${rank}</span>
-                        <span class="font-extrabold text-slate-200">${sym}</span>
-                        <span class="text-slate-400 font-medium font-mono">${rate}</span>
-                        <span class="${isUp ? 'text-emerald-400' : 'text-red-500'} font-bold flex items-center gap-0.5">
-                            ${isUp ? '▲' : '▼'}${Math.abs(delta).toFixed(2)}%
-                        </span>
-                    </div>
-                `;
-            });
-
-            t1.innerHTML = buffer;
-            t2.innerHTML = buffer;
-        }
-
-        function deployLocalTickerFallback() {
-            const fallback = `
-                <div class="flex gap-4 items-center text-slate-500 px-4 font-mono text-xs uppercase">
-                    <i class="fa-solid fa-triangle-exclamation text-amber-500 animate-pulse"></i> 
-                    Local Framework Active (Sync Throttled)
-                </div>
-                <span class="text-slate-400 font-mono">BTC: $96,410</span>
-                <span class="text-slate-400 font-mono">ETH: $3,520</span>
-                <span class="text-slate-400 font-mono">SOL: $192</span>
-            `;
-            document.getElementById("ticker-track-1").innerHTML = fallback;
-            document.getElementById("ticker-track-2").innerHTML = "";
-        }
-
-        // Fetching News Live from CryptoCompare Public API (Free Tier Endpoint)
-        async function fetchCryptoCompareNews() {
-            const container = document.getElementById("main-news-container");
-            const statusText = document.getElementById("feed-status-text");
-            // Optional: Append '&api_key=YOUR_KEY' if you configure an explicit profile key later.
-            const newsEndpoint = "https://min-api.cryptocompare.com/data/v2/news/?lang=EN";
-
+        // Helper function to fetch and format RSS feeds using free rss2json tool
+        async function loadFeed(rssUrl, elementId, itemClass) {
+            const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
             try {
-                const response = await fetch(newsEndpoint);
-                if (!response.ok) throw new Error(`News Pipeline Interrupted: ${response.status}`);
-                
-                const result = await response.json();
-                const articles = result.Data || [];
+                const res = await fetch(apiUrl);
+                const data = await res.json();
+                let html = '';
 
-                if (articles.length === 0) {
-                    container.innerHTML = `<p class="text-xs text-slate-500 font-mono">Zero response streams active.</p>`;
-                    return;
-                }
-
-                // Cache the first 5 elements globally to power the target ID interactive modal mechanics
-                LIVE_EDITORIAL_CACHE = articles.slice(0, 5).map((art, idx) => ({
-                    id: idx,
-                    tag: art.categories.split('|')[0] || "MARKET UPDATE",
-                    time: calculateRelativeTime(art.published_on),
-                    title: art.title,
-                    excerpt: art.body.substring(0, 140) + "...",
-                    body: art.body,
-                    image: art.imageurl,
-                    source: art.source_info.name || "Crypto Wire"
-                }));
-
-                // Render dynamic card sets to layout stream
-                container.innerHTML = LIVE_EDITORIAL_CACHE.map(article => `
-                    <article class="bg-slate-900/30 border border-slate-800/80 hover:border-slate-700/60 p-5 rounded-xl transition-all group flex flex-col sm:flex-row gap-4 justify-between items-start shadow-md">
-                        <img src="${article.image}" alt="Wire Thumb" class="w-full sm:w-24 h-20 object-cover rounded-lg border border-slate-800 bg-slate-950 flex-shrink-0" />
-                        <div class="space-y-1.5 flex-1 w-full">
-                            <div class="flex items-center justify-between text-[9px] font-mono">
-                                <span class="text-emerald-400 font-bold tracking-widest bg-emerald-500/5 px-2 py-0.5 rounded border border-emerald-500/10 uppercase">${article.tag}</span>
-                                <span class="text-slate-500">${article.time}</span>
+                if (data.items && data.items.length > 0) {
+                    data.items.slice(0, 8).forEach(item => {
+                        html += `
+                            <div class="news-item ${itemClass}">
+                                <a class="news-title" href="${item.link}" target="_blank">${item.title}</a>
+                                <div class="news-meta">Published: ${new Date(item.pubDate).toLocaleDateString()}</div>
                             </div>
-                            <h3 class="font-bold text-sm text-slate-200 group-hover:text-white transition-colors leading-snug">${article.title}</h3>
-                            <p class="text-xs text-slate-400 leading-relaxed font-sans">${article.excerpt}</p>
-                            <button onclick="openModal(${article.id})" class="text-[10px] font-mono font-bold text-slate-400 hover:text-white flex items-center gap-1 transition-colors cursor-pointer pt-2">
-                                Read System Wire <i class="fa-solid fa-chevron-right text-[8px] text-slate-600"></i>
-                            </button>
-                        </div>
-                    </article>
-                `).join('');
-
-                statusText.innerText = "Sync'd";
-                statusText.className = "text-emerald-400 font-bold";
-
-            } catch (error) {
-                console.error("CryptoCompare extraction exception:", error);
-                statusText.innerText = "Error";
-                statusText.className = "text-red-500 font-bold";
-                container.innerHTML = `<p class="text-xs text-red-400 font-mono"><i class="fa-solid fa-triangle-exclamation"></i> Editorial Wire aggregation failure. Retrying sync loop...</p>`;
+                        `;
+                    });
+                    document.getElementById(elementId).innerHTML = html;
+                } else {
+                    document.getElementById(elementId).innerText = "No news found.";
+                }
+            } catch (err) {
+                document.getElementById(elementId).innerText = "Failed to load feed.";
             }
         }
 
-        function calculateRelativeTime(timestamp) {
-            const passed = Math.floor(Date.now() / 1000) - timestamp;
-            if (passed < 60) return "Just now";
-            const mins = Math.floor(passed / 60);
-            if (mins < 60) return `${mins}m ago`;
-            const hrs = Math.floor(mins / 60);
-            return `${hrs}h ago`;
-        }
+        // Run on load
+        fetchPrices();
+        
+        // Load Yahoo Finance News Feed
+        loadFeed('https://finance.yahoo.com/news/rssindex', 'yahoo-feed', 'yahoo-item');
+        
+        // Load Google News Feed
+        loadFeed('https://news.google.com/rss/search?q=crypto&hl=en-US&gl=US&ceid=US:en', 'google-feed', 'google-item');
 
-        function compileFlashStreams() {
-            const container = document.getElementById("flash-streams-container");
-            container.innerHTML = FLASH_STREAMS_WIRE.map(flash => {
-                const impactColor = flash.impact === "HIGH" ? "text-red-400 bg-red-500/5 border-red-500/10" : flash.impact === "MID" ? "text-amber-400 bg-amber-500/5 border-amber-500/10" : "text-slate-400 bg-slate-500/5 border-slate-500/10";
-                return `
-                    <div class="bg-slate-900/20 border border-slate-900 hover:border-slate-800 p-3 rounded-lg flex items-start gap-3 transition-colors">
-                        <div class="flex flex-col items-center justify-center font-mono text-[9px] text-slate-500 pt-0.5">
-                            <span>${flash.time}</span>
-                            <span class="font-bold text-slate-300 mt-1 px-1 bg-slate-800 rounded border border-slate-700">${flash.asset}</span>
-                        </div>
-                        <div class="flex-1 space-y-0.5">
-                            <div class="flex items-center justify-between">
-                                <h4 class="text-xs font-bold text-slate-200">${flash.alert}</h4>
-                                <span class="text-[8px] font-mono px-1.5 py-0.2 rounded border ${impactColor}">${flash.impact}</span>
-                            </div>
-                            <p class="text-[11px] text-slate-400 font-sans leading-tight">${flash.desc}</p>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function runSystemClocks() {
-            const timerSpan = document.getElementById("next-update");
-            const clockSpan = document.getElementById("live-clock");
-
-            setInterval(() => {
-                countdownTimer--;
-                if (countdownTimer <= 0) {
-                    timerSpan.innerText = "Re-allocating node data...";
-                } else {
-                    timerSpan.innerText = `Refresh In: ${countdownTimer}s`;
-                }
-
-                const d = new Date();
-                clockSpan.innerText = d.toUTCString().replace("GMT", "UTC");
-            }, 1000);
-        }
-
-        function openModal(id) {
-            const article = LIVE_EDITORIAL_CACHE.find(a => a.id === id);
-            if (!article) return;
-
-            document.getElementById("modal-tag").innerText = article.tag;
-            document.getElementById("modal-title").innerText = article.title;
-            document.getElementById("modal-meta").innerText = `LOG SOURCE: ${article.source.toUpperCase()} // RELATIVE TIME: ${article.time.toUpperCase()}`;
-            document.getElementById("modal-body").innerText = article.body;
-
-            const target = document.getElementById("read-modal");
-            target.classList.remove("hidden");
-            target.classList.add("flex");
-        }
-
-        function closeModal() {
-            const target = document.getElementById("read-modal");
-            target.classList.add("hidden");
-            target.classList.remove("flex");
-        }
+        // Refresh prices every 60 seconds
+        setInterval(fetchPrices, 60000);
     </script>
 </body>
 </html>
