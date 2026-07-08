@@ -125,6 +125,16 @@
         <div class="feed-container">
             
             <div class="column">
+                <div class="column-title" style="color: var(--accent-google)">💙 Google Aggregation</div>
+                <div id="google-feed">Loading open web...</div>
+            </div>
+
+            <div class="column">
+                <div class="column-title" style="color: var(--accent-yahoo)">💜 Yahoo Finance</div>
+                <div id="yahoo-feed">Loading global macro...</div>
+            </div>
+
+            <div class="column">
                 <div class="column-title" style="color: var(--accent-binance)">🔶 Binance System Actions</div>
                 <div id="binance-feed">Loading listings...</div>
             </div>
@@ -132,16 +142,6 @@
             <div class="column">
                 <div class="column-title" style="color: var(--accent-htx)">🔷 HTX (Huobi) Updates</div>
                 <div id="htx-feed">Loading indices...</div>
-            </div>
-
-            <div class="column">
-                <div class="column-title" style="color: var(--accent-yahoo)">💜 Yahoo Finance</div>
-                <div id="yahoo-feed">Loading global macro...</div>
-            </div>
-            
-            <div class="column">
-                <div class="column-title" style="color: var(--accent-google)">💙 Google Aggregation</div>
-                <div id="google-feed">Loading open web...</div>
             </div>
 
         </div>
@@ -182,13 +182,13 @@
                             <div class="news-item ${itemClass}">
                                 <a class="news-title" href="${item.link}" target="_blank">${item.title}</a>
                                 <div class="news-meta">
-                                    <span>${item.author || 'Official Exchange'}</span>
+                                    <span>${item.author || 'Global Feed'}</span>
                                     <span>${new Date(item.pubDate).toLocaleDateString([], {month: 'short', day: 'numeric'})}</span>
                                 </div>
                             </div>
                         `;
-                        // Internal Column Monitization Trigger
-                        if (index === 2 && elementId === 'binance-feed') {
+                        // Keeps your inline ad running inside the Google column now
+                        if (index === 2 && elementId === 'google-feed') {
                             html += `<div class="ad-banner ad-native"><div>Inline Sponsor Slot</div></div>`;
                         }
                     });
@@ -201,15 +201,15 @@
             }
         }
 
-        // Initialize Core Engine Loops
+        // Initialize Engine Loops
         fetchTopTenPrices();
         setInterval(fetchTopTenPrices, 60000);
 
-        // Updated, highly flexible query routes that bypass strict path tracking:
+        // API Aggregator Endpoint Execution (Rearranged Order)
+        loadChannel('https://news.google.com/rss/search?q=crypto&hl=en-US&gl=US&ceid=US:en', 'google-feed', 'google-item');
+        loadChannel('https://finance.yahoo.com/news/rssindex', 'yahoo-feed', 'yahoo-item');
         loadChannel('https://news.google.com/rss/search?q=Binance+listing+announcement&hl=en-US&gl=US&ceid=US:en', 'binance-feed', 'binance-item');
         loadChannel('https://news.google.com/rss/search?q=HTX+Huobi+announcement+listing&hl=en-US&gl=US&ceid=US:en', 'htx-feed', 'htx-item');
-        loadChannel('https://finance.yahoo.com/news/rssindex', 'yahoo-feed', 'yahoo-item');
-        loadChannel('https://news.google.com/rss/search?q=crypto&hl=en-US&gl=US&ceid=US:en', 'google-feed', 'google-item');
     </script>
 </body>
 </html>
